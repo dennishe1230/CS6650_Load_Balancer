@@ -43,6 +43,7 @@ private:
 	RobotInfo CreateSpecialRobot(CustomerRequest request, int engineer_id);
 	CustomerRecord GetCustomerRecord(CustomerRequest request);
 public:
+	void NodeThread(std::unique_ptr<ServerSocket> socket, int engineerId, int serverId);
 	void EngineerThread(std::unique_ptr<ServerSocket> socket, int id);
 	void ExpertThread(int port, int primaryId, std::vector<std::string> nodes_vector, std::vector<int> port_vector, int id);
 };

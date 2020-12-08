@@ -44,6 +44,30 @@ CustomerRecord RobotFactory::GetCustomerRecord(CustomerRequest request) {
 	return record;
 }
 
+void RobotFactory::NodeThread(std::unique_ptr<ServerSocket> socket, int engineerId, int serverId) {
+  CustomerRequest request;
+	RobotInfo robot;
+
+	ServerStub stub;
+	stub.Init(std::move(socket));
+
+	while (true) {
+		request = stub.ReceiveRequest();
+
+		if (!request.IsValid()) {
+			break;
+		}
+
+		robot.CopyRequest(request);
+		robot.SetEngineerId(engineerId);
+		robot.SetAdminId(serverId); // using serverId here
+
+		robot = CreateRegularRobot(request, engineer_id);
+		robot.Print();
+		stub.ShipRobot(robot);
+	}
+}
+
 void RobotFactory::EngineerThread(std::unique_ptr<ServerSocket> socket, int id) {
 	int engineer_id = id;
 	//int robot_type;
