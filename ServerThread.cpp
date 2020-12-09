@@ -62,7 +62,7 @@ void RobotFactory::NodeThread(std::unique_ptr<ServerSocket> socket, int engineer
 		robot.SetEngineerId(engineerId);
 		robot.SetAdminId(serverId); // using serverId here
 
-		robot = CreateRegularRobot(request, engineer_id);
+		robot = CreateRegularRobot(request, engineerId);
 		robot.Print();
 		stub.ShipRobot(robot);
 	}

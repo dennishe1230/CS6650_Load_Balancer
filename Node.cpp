@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
   std::unique_ptr<ServerSocket> new_socket;
   std::unique_ptr<ServerSocket> primary_socket;
   std::vector<std::thread> thread_vector;
+  RobotFactory factory;
   int engineer_cnt = 0;
 
   port = atoi(argv[1]);
@@ -26,7 +27,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  while ((new_stock = socket.Accept())) {
+  while ((new_socket = socket.Accept())) {
     std::thread request_thread(&RobotFactory::NodeThread, &factory,
         std::move(new_socket), engineer_cnt++, serverId);
     thread_vector.push_back(std::move(request_thread));

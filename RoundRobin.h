@@ -20,7 +20,7 @@ struct srv_info {
 
 class RoundRobin {
 public:
-    static std::vector<srv_info> server;
+    std::vector<srv_info> server;
     int getGcd(int a, int b);
     int getMaxGcd();
     int getMaxWeight();
