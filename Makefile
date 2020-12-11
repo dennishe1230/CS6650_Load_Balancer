@@ -46,7 +46,7 @@ CFLAGS := -Wall -std=c++11
 LFLAGS := -pthread
 
 # we are building two target binaries: server and client
-TARGET := server client node loadbalancer
+TARGET := server client loadbalancer
 
 #-------------------------------------------------------------------------------
 # 2. What to build and how to build them
@@ -113,14 +113,14 @@ $(CLNT_OBJS): $(CLNT_SRCS) $(CLNT_HDRS)
 	$(CXX) $(CFLAGS) $(DFLAGS) -c $(CLNT_SRCS)
 
 # Same applies to the client program.
-node: $(N_OBJS) $(CMN_OBJS)
-	$(CXX) $(LFLAGS) -o $@ $^
-
-$(N_OBJS): $(N_SRCS) $(N_HDRS)
-	$(CXX) $(CFLAGS) $(DFLAGS) -c $(N_SRCS)
+#node: $(N_OBJS) $(CMN_OBJS)
+#	$(CXX) $(LFLAGS) -o $@ $^
+#
+#$(N_OBJS): $(N_SRCS) $(N_HDRS)
+#	$(CXX) $(CFLAGS) $(DFLAGS) -c $(N_SRCS)
 
 # Same applies to the client program.
-loadbalancer: $(LB_OBJS) $(CMN_OBJS)
+loadbalancer: $(LB_OBJS) $(CMN_OBJS) ClientStub.o ServerSocket.o ServerStub.o
 	$(CXX) $(LFLAGS) -o $@ $^
 
 $(LB_OBJS): $(LB_SRCS) $(LB_HDRS)
