@@ -1,5 +1,7 @@
 #include "RoundRobin.h"
 #include "ServerSocket.h"
+#include "ServerStub.h"
+#include "ClientStub.h"
 #include <iostream>
 int main(int argc, char *argv[]) {
     if (argc <= 2) {
@@ -34,17 +36,19 @@ int main(int argc, char *argv[]) {
     }
 
     while ((new_socket = socket.Accept())){
+        ServerStub serverStub;
+        ClientStub clientStub;
+
+        serverStub.Init(std::move(new_socket));
+        CustomerRequest request = serverStub.ReceiveRequest();
+
         int srv_idx = rr.getSelectServer(&serverInfo, num_srvs, maxGcd, maxWeight, &curWeight, &serverIndex);
-        //todo: add load balancer thread to receive requests from client and distribute requests to server nodes
+        srv_info target_srv = rr.server[srv_idx];
 
+        clientStub.Init(target_srv.ip, 1234);
+        RobotInfo robotInfo = clientStub.Order(request);
 
-//        iter = mapIndex2Count.find(retIndex);
-//        if (iter != mapIndex2Count.end()) {
-//            count = mapIndex2Count[retIndex];
-//            mapIndex2Count[retIndex] = ++count;
-//        } else {
-//            mapIndex2Count[retIndex] = 1;
-//        }
+        serverStub.ShipRobot(robotInfo);
 
     }
 

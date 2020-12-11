@@ -14,6 +14,14 @@ SRCS := $(wildcard *.cpp)
 OBJS := $(SRCS:.cpp=.o)		# replaces .cpp extension to .o (e.g., main.cpp -> main.o)
 				# and stores the names to OBJS
 
+N_HDRS := $(wildcard Node*.h)
+N_SRCS := $(wildcard Node*.cpp)
+N_OBJS := $(N_SRCS:.cpp=.o)
+
+LB_HDRS := $(wildcard LoadBalancer*.h)
+LB_SRCS := $(wildcard LoadBalancer*.cpp)
+LB_OBJS := $(LB_SRCS:.cpp=.o)
+
 # $(wildcard Server*.h) finds all file names with patterns ("Server" + random string + ".h")
 SVR_HDRS := $(wildcard Server*.h)
 SVR_SRCS := $(wildcard Server*.cpp)
@@ -25,8 +33,8 @@ CLNT_SRCS := $(wildcard Client*.cpp)
 CLNT_OBJS := $(CLNT_SRCS:.cpp=.o)
 
 # $(filter-out X Y Z, A) removes X Y and Z from A if X Y Z are found in A
-CMN_HDRS := $(filter-out $(SVR_HDRS) $(CLNT_HDRS), $(HDRS))
-CMN_SRCS := $(filter-out $(SVR_SRCS) $(CLNT_SRCS), $(SRCS))
+CMN_HDRS := $(filter-out $(SVR_HDRS) $(CLNT_HDRS) $(N_HDRS) $(LB_HDRS), $(HDRS))
+CMN_SRCS := $(filter-out $(SVR_SRCS) $(CLNT_SRCS) $(N_SRCS) $(LB_SRCS), $(SRCS))
 CMN_OBJS := $(CMN_SRCS:.cpp=.o)
 
 
@@ -38,7 +46,7 @@ CFLAGS := -Wall -std=c++11
 LFLAGS := -pthread
 
 # we are building two target binaries: server and client
-TARGET := server client
+TARGET := server client node loadbalancer
 
 #-------------------------------------------------------------------------------
 # 2. What to build and how to build them
@@ -103,6 +111,20 @@ client: $(CLNT_OBJS) $(CMN_OBJS)
 
 $(CLNT_OBJS): $(CLNT_SRCS) $(CLNT_HDRS)
 	$(CXX) $(CFLAGS) $(DFLAGS) -c $(CLNT_SRCS)
+
+# Same applies to the client program.
+node: $(N_OBJS) $(CMN_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $^
+
+$(N_OBJS): $(N_SRCS) $(N_HDRS)
+	$(CXX) $(CFLAGS) $(DFLAGS) -c $(N_SRCS)
+
+# Same applies to the client program.
+loadbalancer: $(LB_OBJS) $(CMN_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $^
+
+$(LB_OBJS): $(LB_SRCS) $(LB_HDRS)
+	$(CXX) $(CFLAGS) $(DFLAGS) -c $(LB_SRCS)
 
 
 # This rule compiles the common source code into object files.
