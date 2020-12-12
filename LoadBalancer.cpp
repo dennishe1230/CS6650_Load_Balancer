@@ -4,7 +4,7 @@
 #include "ClientStub.h"
 #include <iostream>
 int main(int argc, char *argv[]) {
-    if (argc <= 2) {
+    if (argc < 2) {
         std::cout << "arguments not enough" << std::endl;
     }
     int num_srvs = atoi(argv[1]);
