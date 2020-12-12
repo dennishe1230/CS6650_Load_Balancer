@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
         int srv_idx = rr.getSelectServer(&serverInfo, num_srvs, maxGcd, maxWeight, &curWeight, &serverIndex);
         srv_info target_srv = rr.server[srv_idx];
 
-        clientStub.Init(target_srv.ip, 1234);
+        clientStub.Init(target_srv.ip, 12345);
         RobotInfo robotInfo = clientStub.Order(request);
 
         serverStub.ShipRobot(robotInfo);
